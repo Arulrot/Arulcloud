@@ -1,2 +1,17 @@
-<h2>Hi, {{ user }}! You are logged in.</h2>
-<a href="/logout"><button>Logout</button></a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Arul Cloud</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-white">
+  <div class="container text-center mt-5">
+    <h2 class="text-primary">Welcome to Arul Cloud</h2>
+    <p class="lead mt-3">Hello, <strong>{{ user }}</strong> 👋</p>
+    <p>Your cloud is ready and secure. Start uploading files, managing content, or simply enjoy the digital space made for you.</p>
+    <a href="{{ url_for('logout') }}" class="btn btn-danger mt-4">Logout</a>
+  </div>
+</body>
+</html>
