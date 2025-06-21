@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudDrive Pro - Plans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --success: #4ade80;
+            --danger: #f43f5e;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn {
+            background: var(--gray);
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Plans Section */
+        .plans-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .plan-card {
+            background: white;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .plan-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .plan-card.active::before {
+            content: "Current Plan";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 1.5rem;
+            border-radius: 0 0 0 5px;
+        }
+        
+        .plan-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-price {
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .free .plan-price {
+            color: var(--success);
+        }
+        
+        .plan-storage {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .plan-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-features li i {
+            color: var(--success);
+        }
+        
+        .upgrade-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .upgrade-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .plan-card.active .upgrade-btn {
+            background: var(--gray-light);
+            color: var(--dark);
+            cursor: default;
+        }
+        
+        .plan-card.active .upgrade-btn:hover {
+            background: var(--gray-light);
+            transform: none;
+        }
+        
+        /* Messages */
+        .messages-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .message.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .message.success {
+            background-color: #dcfce7;
+            border-left: 4px solid var(--success);
+        }
+        
+        .message.error {
+            background-color: #fee2e2;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .message i {
+            font-size: 1.5rem;
+        }
+        
+        .message.success i {
+            color: var(--success);
+        }
+        
+        .message.error i {
+            color: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-cloud"></i>
+            <span>CloudDrive Pro</span>
+        </div>
+        <div class="user-info">
+
+
+        <div class="user-avatar">
+        {% if user %}{{ user[0]|upper }}{% endif %}
+        </div>
+            <div class="user-details">
+                <div class="user-name">{{ user.split('@')[0] }}</div>
+                <div class="user-email">{{ user }}</div>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn back-btn" onclick="location.href='{{ url_for('main') }}'">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </button>
+                <button class="nav-btn" onclick="location.href='{{ url_for('logout') }}'">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Messages Container -->
+    <div class="messages-container" id="messagesContainer">
+        {% for message in get_flashed_messages(with_categories=true) %}
+        <div class="message {{ message[0] }} show" id="message-{{ loop.index }}">
+            <i class="fas fa-{{ 'check-circle' if message[0] == 'success' else 'exclamation-circle' }}"></i>
+            <div>{{ message[1] }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="container">
+        <div class="plans-section">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your Storage Plan</h2>
+            </div>
+            
+            <div class="plans-container">
+                <div class="plan-card free {{ 'active' if user_plan == 'free' }}">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Free</h3>
+                        <div class="plan-price">$0</div>
+                    </div>
+                    <div class="plan-storage">500 MB Storage</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Basic file storage</li>
+                        <li><i class="fas fa-check"></i> File previews</li>
+                        <li><i class="fas fa-check"></i> Basic security</li>
+                        <li><i class="fas fa-check"></i> Standard support</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                        <input type="hidden" name="plan" value="free">
+                        <button class="upgrade-btn" type="submit">
+                            {{ 'Current Plan' if user_plan == 'free' else 'Select Free Plan' }}
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="plan-card silver {{ 'active' if user_plan == 'silver' }}">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Silver</h3>
+                        <div class="plan-price">$4.99</div>
+                    </div>
+                    <div class="plan-storage">600 MB Storage</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in Free</li>
+                        <li><i class="fas fa-check"></i> +100 MB storage</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
+                        <li><i class="fas fa-check"></i> Faster uploads</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                        <input type="hidden" name="plan" value="silver">
+                        <button class="upgrade-btn" type="submit">
+                            {{ 'Current Plan' if user_plan == 'silver' else 'Upgrade to Silver' }}
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="plan-card gold {{ 'active' if user_plan == 'gold' }}">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Gold</h3>
+                        <div class="plan-price">$9.99</div>
+                    </div>
+                    <div class="plan-storage">700 MB Storage</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in Silver</li>
+                        <li><i class="fas fa-check"></i> +200 MB storage</li>
+                        <li><i class="fas fa-check"></i> Advanced security</li>
+                        <li><i class="fas fa-check"></i> Premium support</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                        <input type="hidden" name="plan" value="gold">
+                        <button class="upgrade-btn" type="submit">
+                            {{ 'Current Plan' if user_plan == 'gold' else 'Upgrade to Gold' }}
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="plan-card premium {{ 'active' if user_plan == 'premium' }}">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Premium</h3>
+                        <div class="plan-price">$14.99</div>
+                    </div>
+                    <div class="plan-storage">800 MB Storage</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in Gold</li>
+                        <li><i class="fas fa-check"></i> +300 MB storage</li>
+                        <li><i class="fas fa-check"></i> Maximum security</li>
+                        <li><i class="fas fa-check"></i> 24/7 premium support</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('upgrade_plan') }}">
+                        <input type="hidden" name="plan" value="premium">
+                        <button class="upgrade-btn" type="submit">
+                            {{ 'Current Plan' if user_plan == 'premium' else 'Upgrade to Premium' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize messages
+        document.querySelectorAll('.message.show').forEach(message => {
+            setTimeout(() => {
+                message.classList.remove('show');
+                setTimeout(() => message.remove(), 300);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
