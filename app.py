@@ -49,7 +49,7 @@ def register():
             )
             return redirect(url_for('verify', email=email))
         except Exception as e:
-            return str(e)
+             return render_template('register.html', error=str(e))
     return render_template('register.html')
 
 @app.route('/verify', methods=['GET', 'POST'])
@@ -67,7 +67,7 @@ def verify():
             )
             return redirect(url_for('login'))
         except Exception as e:
-            return str(e)
+            return render_template('verify.html', email=email, error="Invalid or expired verification code.")
     return render_template('verify.html', email=email)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -88,7 +88,7 @@ def login():
             session['user'] = email
             return redirect(url_for('main'))
         except Exception as e:
-            return str(e)
+              return render_template('login.html', error="Invalid credentials or user not verified.")
     return render_template('login.html')
 
 @app.route('/main')
