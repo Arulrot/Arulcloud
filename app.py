@@ -5,6 +5,7 @@ import hmac
 import hashlib
 import base64
 import pymysql
+import json
 from werkzeug.utils import secure_filename
 from io import BytesIO
 from functools import wraps
@@ -12,18 +13,28 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# AWS Configuration
-USER_POOL_ID = 'ap-south-1_SAaG122HR'
-CLIENT_ID = '67c891uh0llccmls153kh5870e'
-CLIENT_SECRET = '1hnmo8rm5cjnkrt1n6e55h4deg5bc9i39nhfk0ftosb502av2dbi'
-REGION = 'ap-south-1'
-S3_BUCKET = 'arulcloud-drive'
 
-# RDS Configuration
-RDS_HOST = 'database-2.ch86cs4cm9fl.ap-south-1.rds.amazonaws.com'
-RDS_USER = 'admin'
-RDS_PASSWORD = 'aruladmin'
-RDS_DB = 'cloud_drive_db'
+def load_config_from_secrets():
+    secretsmanager = boto3.client('secretsmanager', region_name='ap-south-1')
+    secret_value = secretsmanager.get_secret_value(SecretId='arulcloud-secconfig')
+    return json.loads(secret_value['SecretString'])
+
+# Load secrets
+config = load_config_from_secrets()
+
+
+# Assign to variables
+USER_POOL_ID = config['USER_POOL_ID']
+CLIENT_ID = config['CLIENT_ID']
+CLIENT_SECRET = config['CLIENT_SECRET']
+REGION = config['REGION']
+S3_BUCKET = config['S3_BUCKET']
+RDS_HOST = config['RDS_HOST']
+RDS_USER = config['RDS_USER']
+RDS_PASSWORD = config['RDS_PASSWORD']
+RDS_DB = config['RDS_DB']
+
+
 
 # Initialize AWS clients
 s3 = boto3.client('s3', region_name=REGION)

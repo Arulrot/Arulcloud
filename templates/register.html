@@ -91,6 +91,10 @@
     .fun-footer a:hover {
       text-decoration: underline;
     }
+
+    .password-rules li {
+      transition: 0.3s;
+    }
   </style>
 </head>
 <body>
@@ -114,7 +118,7 @@
           id="name"
           pattern="[A-Za-z ]{3,}"
           title="Name must be at least 3 characters long and contain only letters"
-          placeholder="e.g. Arul Mohan"
+          placeholder="e.g. Arul"
           required>
       </div>
 
@@ -130,17 +134,25 @@
       </div>
 
       <div class="mb-3 position-relative">
-        <label for="password" class="form-label">🔑 Password</label>
+        <label for="password" class="form-label">🔒 Password</label>
         <input
           type="password"
           name="password"
           class="form-control"
           id="password"
-          pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}"
-          title="At least 8 characters with letters and numbers"
-          placeholder="Create a strong password"
-          required>
+          placeholder="Enter a Strong Password"
+          required
+          onkeyup="validatePassword()">
         <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        <div id="passwordHelpBlock" class="form-text mt-2">
+          <ul class="list-unstyled small password-rules">
+            <li id="length" class="text-danger">❌ At least 8 characters</li>
+            <li id="uppercase" class="text-danger">❌ At least one uppercase letter</li>
+            <li id="lowercase" class="text-danger">❌ At least one lowercase letter</li>
+            <li id="number" class="text-danger">❌ At least one number</li>
+            <li id="special" class="text-danger">❌ At least one special character (!@#$...)</li>
+          </ul>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-primary w-100">🌟 Register</button>
@@ -151,6 +163,7 @@
     </p>
   </div>
 
+  <!-- 👇 JavaScript at bottom -->
   <script>
     function togglePassword() {
       const pwd = document.getElementById("password");
@@ -161,6 +174,25 @@
       } else {
         pwd.type = "password";
         toggle.textContent = "👁️";
+      }
+    }
+
+    function validatePassword() {
+      const password = document.getElementById("password").value;
+
+      const rules = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      };
+
+      for (const rule in rules) {
+        const element = document.getElementById(rule);
+        element.classList.remove("text-success", "text-danger");
+        element.classList.add(rules[rule] ? "text-success" : "text-danger");
+        element.innerHTML = (rules[rule] ? "✅" : "❌") + " " + element.textContent.slice(2);
       }
     }
   </script>
