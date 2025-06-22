@@ -13,17 +13,13 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-
 def load_config_from_secrets():
     secretsmanager = boto3.client('secretsmanager', region_name='ap-south-1')
     secret_value = secretsmanager.get_secret_value(SecretId='arulcloud-secconfig')
     return json.loads(secret_value['SecretString'])
 
-# Load secrets
 config = load_config_from_secrets()
 
-
-# Assign to variables
 USER_POOL_ID = config['USER_POOL_ID']
 CLIENT_ID = config['CLIENT_ID']
 CLIENT_SECRET = config['CLIENT_SECRET']
@@ -34,13 +30,9 @@ RDS_USER = config['RDS_USER']
 RDS_PASSWORD = config['RDS_PASSWORD']
 RDS_DB = config['RDS_DB']
 
-
-
-# Initialize AWS clients
 s3 = boto3.client('s3', region_name=REGION)
 cognito = boto3.client('cognito-idp', region_name=REGION)
 
-# Helper function to create SecretHash
 def get_secret_hash(username):
     message = username + CLIENT_ID
     dig = hmac.new(
@@ -50,7 +42,6 @@ def get_secret_hash(username):
     ).digest()
     return base64.b64encode(dig).decode()
 
-# Database connection
 def get_db_connection(use_db=True):
     if use_db:
         return pymysql.connect(
@@ -68,30 +59,23 @@ def get_db_connection(use_db=True):
             connect_timeout=5
         )
 
-# Create database and tables if not exists
 def init_db():
-    # First connect without specifying database
     admin_conn = None
     try:
         admin_conn = get_db_connection(use_db=False)
         with admin_conn.cursor() as cursor:
-            # Create database if not exists
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {RDS_DB}")
             admin_conn.commit()
-            print(f"Database {RDS_DB} created or already exists")
     except Exception as e:
-        print(f"Error creating database: {str(e)}")
         return
     finally:
         if admin_conn:
             admin_conn.close()
     
-    # Now connect to the specific database
     conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Create user_plans table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS user_plans (
                     email VARCHAR(255) PRIMARY KEY,
@@ -99,7 +83,6 @@ def init_db():
                 )
             """)
             
-            # Create plans table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS plans (
                     name VARCHAR(20) PRIMARY KEY,
@@ -107,7 +90,6 @@ def init_db():
                 )
             """)
             
-            # Insert default plans if not exists
             cursor.execute("""
                 INSERT IGNORE INTO plans (name, storage_limit_mb) 
                 VALUES 
@@ -118,14 +100,12 @@ def init_db():
             """)
             
             conn.commit()
-            print("Tables created and default plans inserted")
     except Exception as e:
-        print(f"Error creating tables: {str(e)}")
+        pass
     finally:
         if conn:
             conn.close()
 
-# Get user's storage limit
 def get_user_storage_limit(email):
     conn = None
     try:
@@ -140,13 +120,11 @@ def get_user_storage_limit(email):
             result = cursor.fetchone()
             return result[0] * 1024 * 1024 if result else 500 * 1024 * 1024
     except Exception as e:
-        print(f"Error getting storage limit: {str(e)}")
         return 500 * 1024 * 1024
     finally:
         if conn:
             conn.close()
 
-# Login required decorator
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -155,7 +133,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Routes
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -177,7 +154,6 @@ def register():
                     {'Name': 'name', 'Value': name}
                 ]
             )
-            # Add user to plans table
             conn = None
             try:
                 conn = get_db_connection()
@@ -185,7 +161,7 @@ def register():
                     cursor.execute("INSERT INTO user_plans (email, plan) VALUES (%s, 'free')", (email,))
                 conn.commit()
             except Exception as e:
-                print(f"Error adding user to plans: {str(e)}")
+                pass
             finally:
                 if conn:
                     conn.close()
@@ -239,7 +215,7 @@ def get_user_storage_usage(email):
     for page in paginator.paginate(Bucket=S3_BUCKET, Prefix=f'{email}/'):
         if 'Contents' in page:
             for obj in page['Contents']:
-                if not obj['Key'].endswith('/'):  # Skip directory markers
+                if not obj['Key'].endswith('/'):
                     total += obj['Size']
     return total
 
@@ -248,11 +224,9 @@ def get_user_storage_usage(email):
 def main():
     email = session['user']
     
-    # Get user's plan and storage limit
     storage_limit = get_user_storage_limit(email)
     max_mb = storage_limit // (1024 * 1024)
     
-    # List user files
     paginator = s3.get_paginator('list_objects_v2')
     files = []
     total_bytes = 0
@@ -268,7 +242,6 @@ def main():
     used_mb = round(total_bytes / (1024 * 1024), 2)
     usage_percent = min(100, round((total_bytes / storage_limit) * 100, 2))
 
-    # Get user's current plan
     user_plan = 'free'
     conn = None
     try:
@@ -278,12 +251,11 @@ def main():
             result = cursor.fetchone()
             user_plan = result[0] if result else 'free'
     except Exception as e:
-        print(f"Error getting user plan: {str(e)}")
+        pass
     finally:
         if conn:
             conn.close()
 
-    # Get flashed messages
     messages = []
     if '_flashes' in session:
         messages = [msg[1] for msg in session['_flashes']]
@@ -369,7 +341,6 @@ def preview(filename):
     
     try:
         file_obj = s3.get_object(Bucket=S3_BUCKET, Key=key)
-        # For non-download preview, we just return the file content with appropriate headers
         return send_file(
             BytesIO(file_obj['Body'].read()),
             mimetype='application/octet-stream',
@@ -438,9 +409,8 @@ def upgrade_plan():
 @app.route('/plans')
 @login_required
 def plans():
-    email = session['user']  # Get current user from session
+    email = session['user']
     
-    # Get user's current plan
     user_plan = 'free'
     conn = None
     try:
@@ -450,12 +420,11 @@ def plans():
             result = cursor.fetchone()
             user_plan = result[0] if result else 'free'
     except Exception as e:
-        print(f"Error getting user plan: {str(e)}")
+        pass
     finally:
         if conn:
             conn.close()
     
-    # Pass both user_plan and user to the template
     return render_template('plans.html', user_plan=user_plan, user=email)
 
 @app.route('/logout')
@@ -464,8 +433,4 @@ def logout():
     return redirect(url_for('home'))
 
 
-if __name__ == '__main__':
-    # Initialize database on startup
-    print("Initializing database...")
-    init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+init_db()
