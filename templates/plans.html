@@ -375,7 +375,7 @@
                 <div class="plan-card free {{ 'active' if user_plan == 'free' }}">
                     <div class="plan-header">
                         <h3 class="plan-name">Free</h3>
-                        <div class="plan-price">$0</div>
+                        <div class="plan-price">₹0</div>
                     </div>
                     <div class="plan-storage">500 MB Storage</div>
                     <ul class="plan-features">
@@ -395,7 +395,7 @@
                 <div class="plan-card silver {{ 'active' if user_plan == 'silver' }}">
                     <div class="plan-header">
                         <h3 class="plan-name">Silver</h3>
-                        <div class="plan-price">$4.99</div>
+                        <div class="plan-price">₹19</div>
                     </div>
                     <div class="plan-storage">600 MB Storage</div>
                     <ul class="plan-features">
@@ -415,7 +415,7 @@
                 <div class="plan-card gold {{ 'active' if user_plan == 'gold' }}">
                     <div class="plan-header">
                         <h3 class="plan-name">Gold</h3>
-                        <div class="plan-price">$9.99</div>
+                        <div class="plan-price">₹29</div>
                     </div>
                     <div class="plan-storage">700 MB Storage</div>
                     <ul class="plan-features">
@@ -435,14 +435,14 @@
                 <div class="plan-card premium {{ 'active' if user_plan == 'premium' }}">
                     <div class="plan-header">
                         <h3 class="plan-name">Premium</h3>
-                        <div class="plan-price">$14.99</div>
+                        <div class="plan-price">₹39</div>
                     </div>
                     <div class="plan-storage">800 MB Storage</div>
                     <ul class="plan-features">
                         <li><i class="fas fa-check"></i> Everything in Gold</li>
                         <li><i class="fas fa-check"></i> +300 MB storage</li>
                         <li><i class="fas fa-check"></i> Maximum security</li>
-                        <li><i class="fas fa-check"></i> 24/7 premium support</li>
+                        <li><i class="fas fa-check"></i> 24/7 premium support By Arul </li>
                     </ul>
                     <form method="POST" action="{{ url_for('upgrade_plan') }}">
                         <input type="hidden" name="plan" value="premium">
