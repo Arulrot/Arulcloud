@@ -1,2 +1,2 @@
 # Arulcloud
-own private cloud using aws cloud
+own private cloud using aws 
