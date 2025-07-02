@@ -10,8 +10,12 @@ from werkzeug.utils import secure_filename
 from io import BytesIO
 from functools import wraps
 
+# app = Flask(__name__)
+# app.secret_key = os.urandom(24)
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'my-super-secret-key'
+app.config['SESSION_COOKIE_SECURE'] = True
+
 
 def load_config_from_secrets():
     secretsmanager = boto3.client('secretsmanager', region_name='ap-south-1')
